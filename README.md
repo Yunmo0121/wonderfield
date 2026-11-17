@@ -1,21 +1,20 @@
 # Wonderfield
 
-**A magazine of mathematics you can play with.** The name is a pun: a *field* is
-where fireflies live, where naturalists do fieldwork, and one of mathematics' basic
-structures (and, in Issue 1, the Kuramoto *mean field* every firefly listens to).
+**A magazine of mathematics you can play with.**
 
-![The front page](docs/media/cover-art.png)
+**[Read it online → yunmo0121.github.io/wonderfield](https://yunmo0121.github.io/wonderfield/)**
 
-The site opens on the magazine's front page: a flat serif wordmark (*Wonder* upright,
-*field* in italic, a firefly for the dot of the i), a cover with a single curve, and the
-shelf of issues. The curve is Kuramoto's prediction for synchrony against coupling,
-flat until the tipping point K_c = 2/πg(0) and then rising; the fireflies on it flash
-on their own clocks below K_c and together above it (`src/ui/frontCurve.js`). A **Contents** menu on every page lists all issues and the sections of
-the one you are reading. Issue 1 lives at `synchrony/`.
+![The front page of Wonderfield](docs/media/cover-art.png)
 
-Every issue has one colour,
-one phenomenon, and one experiment to open with. You turn a dial first, and the
-mathematics follows.
+Each issue takes one phenomenon, opens with one experiment you can play with, and then
+shows the mathematics behind it, from the first idea to the research literature. Every
+model is written down, every dial is a symbol in it, and every number quoted was
+measured by simulation and checked by tests.
+
+The name is a pun. A *field* is where fireflies come out at night, and where naturalists
+go to watch them. In algebra it is a set of numbers you can add, subtract, multiply and
+divide (except by zero). In physics it is a quantity spread through space. And in
+Issue 1, every firefly answers to the *mean field* of all the others.
 
 ## Issue 1 · Synchrony
 
@@ -25,8 +24,6 @@ firefly watches the others. Slide it up and a beat appears out of nowhere, while
 a curve under the sky tracks the synchrony `r` against what the theory predicts.
 
 ![The listening dial: raising the coupling until the forest keeps time](docs/media/listening-dial.gif)
-
-**Live issue:** `https://<your-username>.github.io/wonderfield/`
 
 | Colour | Phenomenon | Experiment |
 |---|---|---|
@@ -168,13 +165,25 @@ scripts/                       run-experiments.mjs · build-sync-map.mjs
 docs/                          firefly-model.md · design-notes.md · roadmap.md · media/
 ```
 
+## Adding an issue
+
+1. Add an entry to `src/data/issues.js` (colour, question, phenomenon, experiment) and
+   set its `status` to `'open'` with an `href` when it is ready.
+2. Create its folder with an `index.html`, like `synchrony/`.
+3. Add that page to `build.rollupOptions.input` in `vite.config.js`.
+
+The front page shelf and every Contents menu update themselves from `issues.js`.
+
 ## On the shelf
 
-1. **Synchrony**: fireflies and the listening dial (this issue)
-2. **Flocks**: Boids, three local rules and a flock you can steer
-3. **Life**: Conway's Game of Life
-**Field notes:** the working notebook behind every issue, with derivations,
-experiment logs, parameter comparisons and the algorithms drawn step by step
+| No. | Issue | The question | Status |
+|---|---|---|---|
+| 1 | **Synchrony** | How does a forest keep time? | Out now |
+| 2 | **Flocks** | How does a murmuration turn as one? | In preparation |
+| 3 | **Life** | Can four rules make something alive? | Planned |
+
+**Field notes**, the working notebook behind every issue (full derivations, experiment
+logs, parameter comparisons, algorithms drawn step by step), will grow alongside them.
 
 See [`docs/roadmap.md`](docs/roadmap.md).
 
@@ -189,13 +198,4 @@ Néda et al., *Nature* (2000). Full list in the issue's colophon.
 
 ---
 
-Written and built by Kristie.
-
-## Adding an issue
-
-1. Add an entry to `src/data/issues.js` (colour, question, phenomenon, experiment) and
-   set its `status` to `'open'` with an `href` when it is ready.
-2. Create its folder with an `index.html`, like `synchrony/`.
-3. Add that page to `build.rollupOptions.input` in `vite.config.js`.
-
-The front page shelf and every Contents menu update themselves from `issues.js`.
+Written and built by Kristie · Feedback and ideas are very welcome: open an [issue](https://github.com/Yunmo0121/wonderfield/issues).
