@@ -1,0 +1,511 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wonderfield · Issue 1 · Synchrony</title>
+    <meta name="description" content="Wonderfield is a magazine of mathematics you can play with. Issue 1, Synchrony: turn one dial and watch a forest of fireflies find a beat, then find out why." />
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
+    <script>
+      // Apply the reader's saved choices before first paint.
+      try {
+        var r = document.documentElement;
+        r.dataset.mode = localStorage.getItem('wf-mode') || 'story';
+        r.dataset.paper = localStorage.getItem('wf-paper') || (r.dataset.theme === 'dark' ? 'night' : 'day');
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <!-- ============================================================ DIAL
+         The issue's signature experiment: one dial, one sky, one curve. -->
+    <header class="cover" id="dial">
+      <canvas class="cover__layer" id="cover-bg" aria-hidden="true"></canvas>
+      <canvas class="cover__layer" id="cover-sky" role="img" aria-label="A night forest full of fireflies. Each one flashes in its own time until the coupling slider is raised."></canvas>
+      <div class="cover__inner">
+        <div class="cover__mast">
+          <a class="cover__home" href="../index.html" aria-label="Wonderfield, back to all issues"><span class="wordmark wordmark--small" data-wordmark></span></a>
+          <div class="cover__right">
+            <p class="cover__issue"><span class="issue-dot" aria-hidden="true"></span><span>Issue 1<br />Synchrony</span></p>
+            <button class="menu-btn" type="button" data-open-menu>Contents</button>
+          </div>
+        </div>
+
+        <div class="cover__ask">
+          <h1 class="cover__title">How does a forest keep time?</h1>
+          <p class="cover__caption" id="cover-caption" aria-live="polite">Every light is a firefly keeping its own time. Right now, none of them is paying attention to any other.</p>
+        </div>
+
+        <div class="desk">
+          <div class="desk__dial">
+            <p class="desk__hint" id="cover-hint">Start here. Slide this to the right, slowly.</p>
+            <label for="cover-k">How closely each firefly watches the others</label>
+            <input type="range" id="cover-k" min="0" max="2" step="0.01" value="0" />
+            <div class="desk__ends"><span>not at all</span><span id="cover-k-value">coupling <i>K</i> = 0.00</span><span>closely</span></div>
+          </div>
+          <div class="desk__meter">
+            <p class="desk__r"><span class="desk__r-value" id="cover-r">0.07</span><span class="desk__r-label">synchrony <i>r</i><br />0 is a crowd, 1 is one beat</span></p>
+            <canvas class="desk__curve" id="cover-curve" role="img" aria-label="Synchrony r over the last thirty seconds, with a dashed line marking the value predicted by theory"></canvas>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <nav class="bar" aria-label="This issue">
+      <a class="bar__brand" href="../index.html"><span class="ring" id="reading-ring"></span><span class="bar__name">Wonderfield</span></a>
+      <div class="bar__links">
+        <a href="#feature">The story</a>
+        <a href="#lab">The laboratory</a>
+        <a href="#experiments">Experiments</a>
+      </div>
+      <div class="bar__tools">
+        <button class="menu-btn menu-btn--bar" type="button" data-open-menu>Contents</button>
+        <div class="seg" role="group" aria-label="How much mathematics to show">
+          <button type="button" data-set-mode="story">Story</button>
+          <button type="button" data-set-mode="maths">+ Math<span class="wide">ematic</span>s</button>
+        </div>
+        <div class="seg" role="group" aria-label="Paper colour">
+          <button type="button" data-set-paper="day">Paper</button>
+          <button type="button" data-set-paper="night">Night</button>
+        </div>
+      </div>
+    </nav>
+
+    <main>
+      <!-- ================================================= WHAT YOU JUST DID -->
+      <section class="after" aria-labelledby="after-title">
+        <div class="after__text">
+          <h2 id="after-title">What you just did</h2>
+          <p>You turned one dial. It sets how strongly each firefly leans towards the others, and nothing else. No leader appeared. Nobody counted them in.</p>
+          <p>At low settings the forest stays a crowd, however long you wait. Past a certain point a beat appears out of nowhere and takes over. This issue is about that moment, in three steps: <a href="#one">one firefly</a>, then <a href="#two">many</a>, then <a href="#three">how to measure</a> what they are doing.</p>
+        </div>
+        <dl class="card" aria-label="About this issue">
+          <div><dt>This issue’s colour</dt><dd><span class="swatch swatch--night"></span><span class="swatch swatch--glow"></span>Firefly yellow on a June night</dd></div>
+          <div><dt>Its phenomenon</dt><dd>Synchrony: many rhythms becoming one</dd></div>
+          <div><dt>Its experiment</dt><dd>The listening dial, which you have just used</dd></div>
+        </dl>
+      </section>
+
+      <!-- ========================================================== FEATURE -->
+      <article class="feature" id="feature">
+        <header class="feature__head">
+          <h2 class="feature__title">The clocks in the trees</h2>
+          <p class="feature__dek">Thousands of fireflies, no conductor, one beat. A story in three parts, each with something to play with.</p>
+          <div class="feature__mode">
+            <span id="mode-label">Read it as</span>
+            <div class="seg seg--large" role="group" aria-labelledby="mode-label">
+              <button type="button" data-set-mode="story">Just the story</button>
+              <button type="button" data-set-mode="maths">With the mathematics</button>
+            </div>
+            <p>Either way, every note marked <b>The mathematics</b> can be opened by itself as you go.</p>
+          </div>
+        </header>
+
+        <div class="prose">
+          <p class="dropcap">For about two weeks each year, around the start of June, the forest at Elkmont in the Great Smoky Mountains does something that sounds invented. As the last light goes, thousands of male fireflies of a single species begin to flash. Each gives a quick burst of flashes, then goes dark for several seconds. At first the bursts come from everywhere at once. As more fireflies join in, the bursts line up, until the whole hillside flashes together, goes black together, and flashes again.</p>
+
+          <aside class="side">The species is <i>Photinus carolinus</i>. Of roughly two thousand kinds of firefly, only a handful flash in unison. The other famous ones are the <i>Pteroptyx</i> fireflies of Southeast Asia, which gather in riverside trees and flash together for hours.</aside>
+
+          <p>Reports like this were once dismissed. In 1917 a letter in the journal <i>Science</i> declared that such behaviour would be “contrary to all natural laws”, and suggested that the real cause was the twitching of the observer’s own eyelids. The fireflies were real. The interesting part is the puzzle underneath: no firefly can see the whole forest, and none of them is in charge. So who is keeping time?</p>
+
+          <!-- ------------------------------------------------ PART ONE -->
+          <header class="part" id="one">
+            <span class="ring" data-ring="one"></span>
+            <div><p class="part__n">Part one</p><h3>The rhythm of one firefly</h3></div>
+          </header>
+
+          <p>Start with one. Forget wings, chemistry and courtship. To a mathematician a firefly is a clock: something that runs through the same cycle again and again, and flashes once per cycle. All we need to know is where in its cycle it is.</p>
+          <p>So draw the cycle as a circle and the firefly as a dot travelling round it. Where the dot is on the circle is called the firefly’s <mark>phase</mark>. Each time the dot passes the mark on the right, the firefly flashes.</p>
+        </div>
+
+        <figure class="figure" id="fig-1">
+          <div class="figure__body" id="figure-one"></div>
+          <figcaption><b>Figure 1.</b> A firefly as a clock. Drag the dot round, or let it run. The horizontal bar is cos <i>θ</i>, how far across the dot is; the vertical bar is sin <i>θ</i>, how high. The curve records that height over the last six seconds, newest on the left, with a marker each time the dot passes the flash mark.</figcaption>
+        </figure>
+
+        <div class="prose">
+          <p>Take the dot round by hand in Figure 1. You are now doing the firefly’s job, and the curve beside the circle is keeping a record of how high the dot is. Going round and round a circle, and going up and down in a wave, turn out to be the same motion seen from two sides. The wave has a name you have met before: sine.</p>
+          <p>How fast the dot travels is the firefly’s <mark>natural frequency</mark>. No two fireflies are quite alike: some run a little fast, some a little slow. Remember that. It is the villain of this story.</p>
+
+          <aside class="side">A real flash is chemistry. In the firefly’s lantern an enzyme called luciferase helps oxygen react with a molecule called luciferin, and the reaction gives off light. We keep only the timing.</aside>
+
+          <details class="maths">
+            <summary><span class="maths__label">The mathematics</span> Phase, frequency and where sine comes from</summary>
+            <div class="maths__body">
+              <p>Call the phase <span data-tex="\theta"></span>: an angle measured anticlockwise from the flash mark, in radians, so that one full lap is <span data-tex="2\pi"></span>. Left alone, a firefly moves round at a constant rate <span data-tex="\omega"></span>, its natural frequency:</p>
+              <div class="eq" data-tex-display="\frac{d\theta}{dt} = \omega \quad\Longrightarrow\quad \theta(t) = \theta_0 + \omega t"></div>
+              <p>One lap takes <span data-tex="T = 2\pi/\omega"></span>. With <span data-tex="\omega = \pi"></span> radians per second, the setting Figure 1 starts with, the firefly flashes once every two seconds.</p>
+              <p>Give the circle radius 1. Then the dot sits at the point <span data-tex="(\cos\theta,\ \sin\theta)"></span>. That is what cosine and sine <em>are</em>: the horizontal and vertical positions of a point that has travelled an angle <span data-tex="\theta"></span> round the unit circle. A full lap returns the dot to where it started, so both functions repeat every <span data-tex="2\pi"></span>:</p>
+              <div class="eq" data-tex-display="\sin(\theta + 2\pi) = \sin\theta, \qquad \cos(\theta + 2\pi) = \cos\theta"></div>
+              <p>The wave in Figure 1 is the graph of <span data-tex="\sin(\theta_0 + \omega t)"></span> against time. The firefly flashes each time that wave climbs through zero.</p>
+            </div>
+          </details>
+
+          <!-- ------------------------------------------------ PART TWO -->
+          <header class="part" id="two">
+            <span class="ring" data-ring="two"></span>
+            <div><p class="part__n">Part two</p><h3>When fireflies interact</h3></div>
+          </header>
+
+          <p>Now give the clocks eyes. Put two fireflies on a branch, one that runs slightly fast and one slightly slow, and suppose each has a single habit. When it sees the other flashing ahead of it, it hurries a little. When it sees the other behind, it holds back. How strongly it reacts is the <mark>coupling</mark>, the dial you turned on the cover.</p>
+          <p>Two things are now pulling against each other. The difference in their natural speeds drags the pair apart. The coupling draws them together. Figure 2 lets you referee.</p>
+        </div>
+
+        <figure class="figure" id="fig-2">
+          <div class="figure__body" id="figure-two"></div>
+          <figcaption><b>Figure 2.</b> Two fireflies that can see each other. Above, their clocks. Below, how fast the gap between them changes, for every possible gap. Where the curve is above the axis the gap grows; where it is below, the gap shrinks; the small arrows show which way it moves. The filled dot is where the gap comes to rest. The hollow dot is a resting point that the slightest nudge destroys.</figcaption>
+        </figure>
+
+        <div class="prose">
+          <p>Try this. Leave the difference at 0.60 and bring the coupling up slowly from zero. Below 0.60 the fast firefly keeps lapping the slow one. Above 0.60 they lock, and flash at the same rate for as long as you care to watch. That is the whole law for a pair: they lock when the coupling is at least as large as the difference in their speeds.</p>
+
+          <blockquote class="pull">Two fireflies fall into step exactly when their willingness to listen outweighs their difference in temperament.</blockquote>
+
+          <p>Look closely at a locked pair, though. They do not flash at the same instant. The naturally faster one stays a little ahead. Synchrony here means agreeing on a tempo, with each player keeping a small lead or lag of its own.</p>
+
+          <details class="maths">
+            <summary><span class="maths__label">The mathematics</span> From two equations to one inequality</summary>
+            <div class="maths__body">
+              <p>Give the fireflies natural frequencies <span data-tex="\omega_1"></span> and <span data-tex="\omega_2"></span>. The simplest smooth way to write “hurry if the other is ahead, hold back if it is behind” uses a sine:</p>
+              <div class="eq" data-tex-display="\begin{aligned}\frac{d\theta_1}{dt} &= \omega_1 + \tfrac{K}{2}\sin(\theta_2-\theta_1)\\[4pt] \frac{d\theta_2}{dt} &= \omega_2 + \tfrac{K}{2}\sin(\theta_1-\theta_2)\end{aligned}"></div>
+              <p>If firefly 2 is slightly ahead, <span data-tex="\sin(\theta_2-\theta_1)"></span> is positive, so firefly 1 speeds up while firefly 2 slows down. <span data-tex="K"></span> is the coupling strength.</p>
+              <p>We only care about the gap between them, <span data-tex="\varphi = \theta_2 - \theta_1"></span>. Subtract the first equation from the second and the pair collapses into one equation for the gap:</p>
+              <div class="eq" data-tex-display="\frac{d\varphi}{dt} = \Delta\omega - K\sin\varphi, \qquad \Delta\omega = \omega_2 - \omega_1"></div>
+              <p>The gap is at rest when <span data-tex="d\varphi/dt = 0"></span>, that is when <span data-tex="\sin\varphi = \Delta\omega/K"></span>. A sine never exceeds 1, so a resting gap exists only if</p>
+              <div class="eq eq--big" data-tex-display="|\Delta\omega| \le K"></div>
+              <p>When it does, there are two: <span data-tex="\varphi^* = \arcsin(\Delta\omega/K)"></span> and <span data-tex="\pi - \varphi^*"></span>. Figure 2 shows which one matters. At the first, the curve crosses the axis going downwards, so a gap that is slightly too big shrinks and one slightly too small grows: it is stable. At the second the arrows point away: unstable. As <span data-tex="K"></span> falls towards <span data-tex="|\Delta\omega|"></span> the two slide together, merge and vanish. This is a <em>saddle-node bifurcation</em>.</p>
+              <p>Past that point the gap drifts for ever, slipping one full lap every <span data-tex="2\pi/\sqrt{\Delta\omega^2 - K^2}"></span> seconds. Just short of the threshold that is a long time: the pair lingers where the resting point used to be, almost locked, then slips a whole lap in a rush. Try <span data-tex="\Delta\omega = 0.60"></span> with <span data-tex="K = 0.55"></span>.</p>
+            </div>
+          </details>
+
+          <aside class="side">The gap equation was first written down in 1946 by Robert Adler, for electronic oscillators that lock onto a signal. The same line of algebra describes a radio circuit and two fireflies on a branch.</aside>
+
+          <p>With a forest instead of a pair, the habit stays the same; there are just more neighbours. Each firefly looks at the others it can see, works out whether it is on average ahead of them or behind, and adjusts. Nothing in that rule mentions the forest as a whole.</p>
+          <p>The laboratory below holds 150 fireflies. Each one sees only the neighbours within a certain radius, runs at its own natural speed, and is jostled by a little random noise. Press <b>Start</b> and leave the dials alone for half a minute.</p>
+
+          <details class="maths">
+            <summary><span class="maths__label">The mathematics</span> The model of the whole sky</summary>
+            <div class="maths__body">
+              <p>Number the fireflies <span data-tex="i = 1, \dots, N"></span>. Each has its own natural frequency drawn from a bell curve, <span data-tex="\omega_i = \omega_0 + \sigma z_i"></span>, where <span data-tex="z_i"></span> is a standard normal number. The dial called <em>individuality</em> is <span data-tex="\sigma"></span>. In the model Yoshiki Kuramoto introduced in 1975, every firefly feels the average pull of all the others:</p>
+              <div class="eq" data-tex-display="\frac{d\theta_i}{dt} = \omega_i + \frac{K}{N}\sum_{j=1}^{N}\sin(\theta_j - \theta_i)"></div>
+              <p>The laboratory adds two things. A firefly averages only over the set <span data-tex="N_i"></span> of fireflies within distance <span data-tex="R"></span> of it, on a world whose edges wrap round, and its clock is jostled by random noise of strength <span data-tex="D"></span>:</p>
+              <div class="eq" data-tex-display="d\theta_i = \Big[\,\omega_i + \frac{K}{|N_i|}\sum_{j \in N_i}\sin(\theta_j - \theta_i)\Big]\,dt + \sqrt{2D}\,dW_i"></div>
+              <p>Turn <span data-tex="R"></span> up to its maximum and <span data-tex="D"></span> down to zero and you recover Kuramoto’s model exactly. The computer advances these equations in steps of 1/60 of a second, by the Euler–Maruyama method, and every random number comes from a seeded generator, so the same seed always replays the same night.</p>
+            </div>
+          </details>
+        </div>
+      </article>
+
+      <!-- ====================================================== LABORATORY -->
+      <section class="spread" id="lab" aria-labelledby="lab-title">
+        <div class="spread__inner">
+          <div class="spread__head">
+            <h2 id="lab-title" class="spread__title">The whole sky, in your hands</h2>
+            <p class="spread__intro">Six dials, each one a symbol in the model. Click the sky to release another firefly. The box under the sky says what is going on and why, and the plots below it show who has joined in.</p>
+          </div>
+          <div class="lab">
+            <div class="stage">
+              <canvas id="sky-bg" aria-hidden="true"></canvas>
+              <canvas id="sky" role="img" aria-label="Live simulation of fireflies flashing over a forest"></canvas>
+              <span class="stage__badge" id="mode-badge"></span>
+            </div>
+            <aside class="panel" id="controls" aria-label="Simulation dials"></aside>
+            <div class="observation" id="observation">
+              <p class="observation__label">Interesting observation</p>
+              <p class="observation__text" data-observation></p>
+            </div>
+            <div class="status" id="status"></div>
+          </div>
+          <p class="spread__caption"><b>Figure 3.</b> The laboratory. The dotted tick on the coupling dial marks the tipping point for the current individuality and noise, in a forest where everyone sees everyone. Changing the speed changes how fast time passes, never what happens.</p>
+        </div>
+      </section>
+
+      <!-- ===================================================== FEATURE, II -->
+      <article class="feature feature--continued">
+        <div class="prose">
+          <!-- ---------------------------------------------- PART THREE -->
+          <header class="part" id="three">
+            <span class="ring" data-ring="many"></span>
+            <div><p class="part__n">Part three</p><h3>Measuring collective order</h3></div>
+          </header>
+
+          <p>It is easy to watch that sky and feel that it has synchronised. A feeling is not a measurement, and a pretty animation can fool the person who made it as easily as the person watching. We need a number.</p>
+          <p>Here is Kuramoto’s trick. Turn each firefly’s phase into an arrow of length one, pointing at wherever its dot sits on the circle. Now average the arrows: lay them head to tail, see how far you have travelled, and divide by the number of arrows. If the fireflies agree, the arrows march off in a line and the average is long, close to 1. If they disagree, the arrows wander back over themselves and the average is short.</p>
+          <p>The length of that average arrow is called <span data-tex="r"></span>, the <mark>order parameter</mark>. It is the number on the cover and the percentage in the laboratory.</p>
+        </div>
+
+        <figure class="figure" id="fig-4">
+          <div class="figure__body" id="figure-four"></div>
+          <figcaption><b>Figure 4.</b> Left, twelve phases drawn as arrows of length one. Right, the same arrows, each shrunk to a twelfth and laid head to tail. Where the chain ends is the average arrow; its length is <i>r</i>. Spread the phases out and watch the chain curl up on itself.</figcaption>
+        </figure>
+
+        <div class="prose">
+          <p>One warning, which Figure 4 lets you check. Push the spread to its maximum, so the arrows are completely random, and shuffle a few times. The answer is never zero. Twelve random arrows give an <span data-tex="r"></span> of about 0.26 on average, by chance alone; 150 fireflies give about 0.07. A small <span data-tex="r"></span> is evidence of nothing. Part of measuring well is knowing what “nothing” looks like.</p>
+
+          <details class="maths">
+            <summary><span class="maths__label">The mathematics</span> Arrows are complex numbers</summary>
+            <div class="maths__body">
+              <p>The arrows have a tidy algebraic form. Lay the circle on the complex plane, with real numbers along the horizontal axis and imaginary ones up the vertical. The point at angle <span data-tex="\theta"></span> on the unit circle is the complex number <span data-tex="\cos\theta + i\sin\theta"></span>, and Euler’s formula gives it a shorter name:</p>
+              <div class="eq eq--big" data-tex-display="e^{i\theta} = \cos\theta + i\sin\theta"></div>
+              <figure class="euler">
+                <svg viewBox="0 0 250 222" role="img" aria-label="The unit circle in the complex plane. A point at angle theta has horizontal coordinate cosine theta and vertical coordinate sine theta, and is the complex number e to the i theta.">
+                  <line class="e-axis" x1="14" y1="115" x2="218" y2="115" />
+                  <line class="e-axis" x1="110" y1="18" x2="110" y2="210" />
+                  <circle class="e-circle" cx="110" cy="115" r="80" />
+                  <path class="e-arc" d="M134 115 A24 24 0 0 0 128.4 99.6" />
+                  <line class="e-radius" x1="110" y1="115" x2="171.3" y2="63.6" />
+                  <line class="e-cos" x1="110" y1="115" x2="171.3" y2="115" />
+                  <line class="e-sin" x1="171.3" y1="115" x2="171.3" y2="63.6" />
+                  <circle class="e-point" cx="171.3" cy="63.6" r="5.5" />
+                  <text class="e-label" x="246" y="119" text-anchor="end">real</text>
+                  <text class="e-label" x="117" y="26">imaginary</text>
+                  <text class="e-num" x="196" y="131">1</text>
+                  <text class="e-num" x="98" y="32" text-anchor="end">i</text>
+                  <text class="e-cos-t" x="140" y="132" text-anchor="middle">cos θ</text>
+                  <text class="e-sin-t" x="181" y="94">sin θ</text>
+                  <text class="e-num" x="143" y="106">θ</text>
+                  <text class="e-name" x="179" y="58">e<tspan dy="-6" font-size="11">iθ</tspan></text>
+                </svg>
+                <figcaption>The same picture as Figure 1, read as a number.</figcaption>
+              </figure>
+              <p>Adding complex numbers adds their horizontal and vertical parts separately, which is exactly “laying arrows head to tail”. So the average arrow is the average of the <span data-tex="N"></span> numbers <span data-tex="e^{i\theta_j}"></span>. Writing its length as <span data-tex="r"></span> and its direction as <span data-tex="\psi"></span>:</p>
+              <div class="eq" data-tex-display="r\,e^{i\psi} = \frac{1}{N}\sum_{j=1}^{N} e^{i\theta_j}"></div>
+              <p>Split that into real and imaginary parts: <span data-tex="r\cos\psi"></span> is the average of the <span data-tex="\cos\theta_j"></span>, and <span data-tex="r\sin\psi"></span> is the average of the <span data-tex="\sin\theta_j"></span>. If every phase is the same, <span data-tex="r = 1"></span>. For <span data-tex="N"></span> phases chosen at random the arrows make a random walk, whose length grows like <span data-tex="\sqrt{N}"></span>, so <span data-tex="r"></span> is roughly <span data-tex="1/\sqrt{N}"></span>. The exact average is</p>
+              <div class="eq" data-tex-display="\mathbb{E}[r] \approx \frac{\sqrt{\pi}}{2\sqrt{N}}"></div>
+              <p>which is 0.26 for twelve arrows and 0.07 for 150 fireflies.</p>
+            </div>
+          </details>
+
+          <!-- ------------------------------------------------------ WHY -->
+          <header class="part" id="why">
+            <span class="ring" data-ring="order"></span>
+            <div><h3>Why it works: agreement feeds itself</h3></div>
+          </header>
+
+          <p>Now the cover can be explained. Suppose a few fireflies happen to agree. Their arrows add up, so the average arrow gets a little longer. Every firefly is pulled towards that average, and the pull is proportional to its length. So a little agreement makes a pull, the pull makes more agreement, and more agreement makes a stronger pull.</p>
+          <p>Order feeds itself. That is why the curve on the cover does not climb steadily: it starts slowly and then accelerates. It is also why synchrony can fail completely. The loop has to get started. If natural speeds are too varied for that first weak pull to hold on to anyone, nothing ever builds.</p>
+          <p>The laboratory shows who is inside the loop. In its panel “Who has joined the beat?”, fireflies that have given up their own tempo for the group’s sit on a flat line, and the hold-outs stay on the diagonal.</p>
+
+          <details class="maths">
+            <summary><span class="maths__label">The mathematics</span> Everyone is coupled to the average</summary>
+            <div class="maths__body">
+              <p>Multiply both sides of the definition of <span data-tex="r"></span> by <span data-tex="e^{-i\theta_i}"></span> and take the imaginary part:</p>
+              <div class="eq" data-tex-display="r\sin(\psi - \theta_i) = \frac{1}{N}\sum_{j=1}^{N}\sin(\theta_j - \theta_i)"></div>
+              <p>The right-hand side is exactly the sum in Kuramoto’s model, so the model can be rewritten as</p>
+              <div class="eq eq--big" data-tex-display="\frac{d\theta_i}{dt} = \omega_i + K\,r\,\sin(\psi - \theta_i)"></div>
+              <p>Each firefly now looks like one of the pair in Part two, with a single partner: the group average, at coupling <span data-tex="Kr"></span>. The law for two fireflies carries straight over. If the group flashes at frequency <span data-tex="\Omega"></span>, firefly <span data-tex="i"></span> can lock on to it when</p>
+              <div class="eq" data-tex-display="|\omega_i - \Omega| \le K r"></div>
+              <p>and drifts otherwise. The pull <span data-tex="Kr"></span> grows with <span data-tex="r"></span> itself. That is the feedback, written in symbols. The shaded band in the laboratory’s “Who has joined the beat?” is this inequality, drawn live: the natural tempos within <span data-tex="Kr"></span> of the group’s.</p>
+            </div>
+          </details>
+
+          <!-- ----------------------------------------------------- WHEN -->
+          <header class="part" id="tipping">
+            <span class="ring" data-ring="many"></span>
+            <div><h3>When it fails: the tipping point</h3></div>
+          </header>
+
+          <p>So will any amount of listening bring a forest into step, given long enough? No, and this is the surprise at the centre of the subject. Below a critical coupling a crowd stays a crowd for ever. Above it, order switches on.</p>
+          <p>Figure 5 shows the switch. The line is what theory predicts for an infinitely large forest. Press the button and your browser will simulate thirty separate forests of 200 fireflies, each at a different coupling, and mark where they end up.</p>
+        </div>
+
+        <figure class="figure" id="fig-5">
+          <div class="figure__body" id="figure-five"></div>
+          <figcaption><b>Figure 5.</b> Synchrony against coupling, with everyone able to see everyone, individuality <i>σ</i> = 0.25 and no noise. Coupling is measured in units of the critical value <i>K</i><sub>c</sub>. Each dot is the average <i>r</i> over the last 20 seconds of a 60-second simulation.</figcaption>
+        </figure>
+
+        <div class="prose">
+          <p>Where the switch sits depends on how different the fireflies are from one another. Figure 6 is the map. Coupling runs across and individuality runs up, and every square is its own simulated forest: dark for a crowd, bright for a beat. The border between them is a straight line. Twice the individuality needs twice the coupling.</p>
+        </div>
+
+        <figure class="figure" id="fig-6">
+          <div class="figure__body" id="figure-six"></div>
+          <figcaption><b>Figure 6.</b> A map of synchrony: 420 simulated forests of 200 fireflies, each run for 60 seconds. The dashed line is the theoretical tipping line. Squares close to it are slow to make up their minds, so some had not settled when the minute ran out. Click any square, then open that forest in the laboratory. The ring shows where the laboratory’s dials are now.</figcaption>
+        </figure>
+
+        <div class="prose">
+          <details class="maths">
+            <summary><span class="maths__label">The mathematics</span> Where the tipping point comes from</summary>
+            <div class="maths__body">
+              <p>Suppose the forest has settled with some synchrony <span data-tex="r"></span>. By the locking condition above, fireflies whose natural frequency is within <span data-tex="Kr"></span> of the group’s are locked, and the others drift. Kuramoto showed that the drifting ones cancel out on average, so the locked ones must supply all of <span data-tex="r"></span>. Asking that the <span data-tex="r"></span> they supply equals the <span data-tex="r"></span> we assumed gives a self-consistency equation,</p>
+              <div class="eq" data-tex-display="1 = K\int_{-\pi/2}^{\pi/2}\cos^2\theta\; g(K r\sin\theta)\,d\theta"></div>
+              <p>where <span data-tex="g"></span> is the density of natural frequencies measured from their average. The right-hand side is largest as <span data-tex="r \to 0"></span>, where it equals <span data-tex="K\,g(0)\,\pi/2"></span>. A synchronised state can exist only if that is more than 1:</p>
+              <div class="eq eq--big" data-tex-display="K_c = \frac{2}{\pi\,g(0)}"></div>
+              <p>For a bell curve with standard deviation <span data-tex="\sigma"></span>, <span data-tex="g(0) = 1/(\sigma\sqrt{2\pi})"></span>, so <span data-tex="K_c = \sigma\sqrt{8/\pi} \approx 1.6\,\sigma"></span>: the straight line in Figure 6. Just above the threshold <span data-tex="r"></span> grows like <span data-tex="\sqrt{K - K_c}"></span>, which is why the curve in Figure 5 leaves the axis almost vertically.</p>
+              <p>Noise moves the threshold too. If every clock is also jostled by random noise of strength <span data-tex="D"></span>, as in the laboratory, a crowd first becomes unstable at</p>
+              <div class="eq" data-tex-display="K_c(D) = \frac{2}{\displaystyle\int_{-\infty}^{\infty} g(\omega)\,\frac{D}{D^2+\omega^2}\,d\omega}"></div>
+              <p>a result due to Hidetsugu Sakaguchi (1988). As <span data-tex="D \to 0"></span> it returns to <span data-tex="2/(\pi g(0))"></span>, and for identical fireflies it is simply <span data-tex="2D"></span>. With <span data-tex="\sigma = 0.25"></span>, noise of <span data-tex="D = 0.2"></span> lifts the tipping point from 0.40 to 0.68, and <span data-tex="D = 0.4"></span> lifts it to 1.01. The dotted tick on the laboratory’s coupling dial is this formula, recalculated whenever you move the individuality or noise dial.</p>
+              <p>Two caveats. The theory is for infinitely many fireflies; 200 of them meet the threshold as a steep slope instead of a sharp corner, and never show an <span data-tex="r"></span> much below <span data-tex="1/\sqrt{N}"></span>. And close to <span data-tex="K_c"></span> order builds very slowly, so a 60-second run there has not finished.</p>
+            </div>
+          </details>
+
+          <p>That gives three different ways for a forest to fail, and you can watch each of them in the laboratory.</p>
+        </div>
+
+        <div class="fails">
+          <article>
+            <h4>Too individual</h4>
+            <p>The coupling is below the tipping point. Everyone can see everyone, and it makes no difference.</p>
+            <button class="fig-button" type="button" data-experiment="below">Try it in the laboratory</button>
+          </article>
+          <article>
+            <h4>Too noisy</h4>
+            <p>Random jostling knocks the phases apart as fast as coupling gathers them. Noise lifts the tipping point itself: watch the dotted tick on the coupling dial jump past the handle.</p>
+            <button class="fig-button" type="button" data-experiment="windy">Try it in the laboratory</button>
+          </article>
+          <article>
+            <h4>Too short-sighted</h4>
+            <p>Each firefly sees only a small patch. Neighbourhoods agree quickly; the forest takes far longer, and may not get there.</p>
+            <button class="fig-button" type="button" data-experiment="gossip">Try it in the laboratory</button>
+          </article>
+        </div>
+
+        <!-- --------------------------------------------------- LIMITS -->
+        <div class="prose">
+          <header class="part" id="limits">
+            <span class="ring" data-ring="many"></span>
+            <div><h3>What the model leaves out</h3></div>
+          </header>
+
+          <p>A model is a deliberate simplification. This one keeps a single idea: rhythm plus mutual adjustment is enough to create order, and only past a threshold. It is right about that idea, and silent about a great deal of firefly biology. So it is worth being exact about what was left out.</p>
+          <p>Start with the largest omission. In our model a firefly feels its neighbours all the time, smoothly, as if it could read their clocks. A real firefly sees nothing at all until a neighbour flashes. Then it gets one sudden nudge.</p>
+          <p>In 1990 Renato Mirollo and Steven Strogatz studied clocks that talk only in pulses like that, building on a model Charles Peskin had made of the heart’s pacemaker cells. Figure 7 is their model, running. Twenty identical fireflies charge up, flash, and start again. Every flash lifts all the others a little closer to their own.</p>
+        </div>
+
+        <figure class="figure" id="fig-7">
+          <div class="figure__body" id="figure-seven"></div>
+          <figcaption><b>Figure 7.</b> Twenty identical fireflies that interact only through flashes, drawn the way field biologists draw their recordings: one row for each firefly and one mark for each flash, over the last sixteen seconds. The fireflies themselves are in the column on the right. Separate rhythms show up as slanting stripes. Set <i>ε</i> to zero and the stripes stay parallel for ever.</figcaption>
+        </figure>
+
+        <div class="prose">
+          <p>The stripes can only merge. Once a flash carries a second firefly over the top, the two flash together, feel exactly the same nudges from then on, and stay together for good. Mirollo and Strogatz proved that this goes all the way: from almost any starting arrangement, identical fireflies that can all see each other end as a single rhythm.</p>
+          <p>Compare that ending with the laboratory’s. There, a synchronised swarm still shows an arc of dots on the phase circle, fast fireflies leading and slow ones trailing, and <span data-tex="r"></span> stops short of 1. Here there is no arc. The unison is exact, and it arrives in a finite time. Two models, two different roads to one beat. Real fireflies are under no obligation to take either.</p>
+
+          <details class="maths">
+            <summary><span class="maths__label">The mathematics</span> Why flashes can only bring rhythms together</summary>
+            <div class="maths__body">
+              <p>Give each firefly a phase <span data-tex="\varphi"></span> that runs steadily from 0 to 1 over one period, and a “charge” <span data-tex="x = f(\varphi)"></span> that rises from 0 to 1 along a curve that bends downwards: quick at first, slow near the top. Figure 7 uses the example from Mirollo and Strogatz’s paper, with <span data-tex="b = 3"></span>:</p>
+              <div class="eq" data-tex-display="f(\varphi) = \frac{1}{b}\,\ln\!\big(1 + (e^{b}-1)\,\varphi\big)"></div>
+              <p>When a charge reaches 1 the firefly flashes and its charge returns to 0. Every other charge is lifted by <span data-tex="\varepsilon"></span>, or to 1 if that is nearer:</p>
+              <div class="eq" data-tex-display="x_j \;\longrightarrow\; \min(1,\; x_j + \varepsilon)"></div>
+              <p>A firefly lifted to 1 flashes in the same instant. From then on the two have the same phase and receive the same lifts, so nothing can separate them. This is called <em>absorption</em>, and it is why the number of rhythms in Figure 7 never goes up.</p>
+              <p>Why do absorptions keep happening? A lift of <span data-tex="\varepsilon"></span> in charge moves the phase forward by about <span data-tex="\varepsilon / f'(\varphi)"></span>. The curve flattens towards the top, so <span data-tex="f'"></span> is smallest there, and the same flash advances a firefly that is nearly ready by more than one that has only just begun. The bend is essential: along a straight line every firefly would be advanced equally and no gap would ever close. Using only the facts that <span data-tex="f"></span> rises and bends downwards, Mirollo and Strogatz proved that for any number of identical oscillators, all able to see each other, the starting states that fail to reach unison form a set of measure zero.</p>
+            </div>
+          </details>
+        </div>
+
+        <section class="limits" aria-labelledby="limits-title">
+          <h3 id="limits-title">Four more things neither model includes</h3>
+          <ul>
+            <li><b>Not every firefly is a steady clock.</b> Field recordings of <i>Photinus carolinus</i> published in 2023 found that a male on his own flashes in bursts at irregular intervals. The regular rhythm of the swarm appears only in a group. For that species, the “clock” of Part one is itself something the crowd creates.</li>
+            <li><b>Real fireflies can retune.</b> Our fireflies never change their natural speed, which is why a locked pair in Figure 2 keeps a permanent gap. Some Southeast Asian species do better. Paced by a rhythm slightly different from their own, <i>Pteroptyx malaccae</i> shift their own tempo until the gap disappears. Bard Ermentrout’s 1991 model adds exactly that ability.</li>
+            <li><b>Seeing is complicated.</b> Real fireflies have lines of sight blocked by leaves and take time to react, and in the Smokies it is the flying males that synchronise while females answer from the ground. We use a circle of radius <i>R</i> and instant reactions.</li>
+            <li><b>Our forest is small and flat.</b> 150 fireflies on a rectangle whose edges wrap round, where a real display has thousands in three dimensions.</li>
+          </ul>
+        </section>
+      </article>
+
+      <!-- ======================================================= EVERYWHERE -->
+      <section class="everywhere" id="everywhere" aria-labelledby="everywhere-title">
+        <div class="everywhere__head">
+          <h2 id="everywhere-title">The same story elsewhere</h2>
+          <p>Wherever many rhythms can sense each other, this mathematics has something to say. Sometimes what it says is “not so fast”.</p>
+        </div>
+        <div class="everywhere__grid">
+          <article>
+            <p class="everywhere__when">February 1665</p>
+            <h3>Two pendulum clocks</h3>
+            <p>Christiaan Huygens, unwell and confined to his room, noticed that two clocks hanging from one beam always ended up swinging in exact opposition. Disturb them, and within half an hour they were back. He called it an odd kind of sympathy. The beam was carrying tiny movements between them.</p>
+          </article>
+          <article>
+            <p class="everywhere__when">About once a second</p>
+            <h3>Your heartbeat</h3>
+            <p>Every beat starts in the sinoatrial node, a cluster of thousands of pacemaker cells. Each cell can keep a rhythm of its own. Coupled together, they fire as one.</p>
+          </article>
+          <article>
+            <p class="everywhere__when">June 2000</p>
+            <h3>The Millennium Bridge</h3>
+            <p>London’s new footbridge swayed so much that it closed two days after opening. For years it was the textbook case of walkers falling into step. A 2021 study argues the reverse: people keeping their balance on a moving deck feed the sway even when out of step, and any synchrony is a result of the wobble, not its cause.</p>
+          </article>
+          <article>
+            <p class="everywhere__when">After a good concert</p>
+            <h3>Applause</h3>
+            <p>Scattered clapping sometimes falls into a single rhythm. Physicists who recorded theatre audiences in 2000 found the crowd does it by clapping more slowly, which narrows the spread of tempos. In this issue’s terms, they turn down the individuality dial.</p>
+          </article>
+          <article>
+            <p class="everywhere__when">50 times a second</p>
+            <h3>The power grid</h3>
+            <p>Every generator on Britain’s grid has to turn in step. Engineers study when a grid stays locked together, and when it can fall apart, with equations closely related to Kuramoto’s.</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- ====================================================== EXPERIMENTS -->
+      <section class="experiments" id="experiments" aria-labelledby="experiments-title">
+        <div class="experiments__head">
+          <h2 id="experiments-title">Seven experiments to try</h2>
+          <p>Guess first. Then set up the sky, watch for a minute, and turn the answer up. Each experiment has a fixed seed, so you will see exactly what we saw. The figures quoted are averages over five seeds and 90 seconds of simulated time.</p>
+        </div>
+        <div class="experiments__grid" id="notes-grid"></div>
+      </section>
+    </main>
+
+    <!-- ========================================================= COLOPHON -->
+    <footer class="colophon" id="colophon">
+      <div class="colophon__inner">
+        <div class="colophon__letter">
+          <h2>From the editor</h2>
+          <!-- Kristie: this letter is a placeholder. Rewrite it in your own words. -->
+          <p>Mathematics usually reaches us finished: a clean equation on a page, with the struggle tidied away. This magazine tries to show it running. Every figure in this issue is a working world. Change a number and the world answers, and the reason is in the equation beside it.</p>
+          <p class="colophon__sign">Kristie</p>
+          <h3>How this issue was checked</h3>
+          <p>Every figure runs on the same simulation code, which is covered by 38 automated tests. Among other things they check that the tipping point predicted for a noisy forest really does separate a crowd from a beat in simulation. Experiments use a fixed time step and a seeded random number generator, so they replay exactly. The numbers quoted in the experiments and the map in Figure 6 were measured, not estimated, and the scripts that produced them are in the repository.</p>
+          <!-- TODO: replace with your repository URL -->
+          <p><a href="https://github.com/Yunmo0121/wonderfield">Read the source on GitHub</a></p>
+        </div>
+
+        <div class="colophon__shelf">
+          <h3>On the shelf <a class="colophon__all" href="../index.html">All issues →</a></h3>
+          <ol class="shelf">
+            <li class="shelf__item shelf__item--now">
+              <span class="issue-dot" aria-hidden="true"></span>
+              <div><b>Issue 1, Synchrony</b><span>Fireflies and the listening dial. You are here.</span></div>
+            </li>
+            <li class="shelf__item">
+              <span class="issue-dot issue-dot--dusk" aria-hidden="true"></span>
+              <div><b>Issue 2, Flocks</b><span>Three local rules and a flock you can steer. In preparation.</span></div>
+            </li>
+            <li class="shelf__item">
+              <span class="issue-dot issue-dot--moss" aria-hidden="true"></span>
+              <div><b>Issue 3, Life</b><span>Conway’s Game of Life: four rules and a zoo of creatures. Planned.</span></div>
+            </li>
+          </ol>
+          <p class="colophon__small">Each issue has one colour, one phenomenon and one experiment to open with. Later, every issue gets a deeper notebook: derivations, experiment logs, parameter comparisons and its algorithms drawn step by step.</p>
+          <p class="colophon__small">Set in Newsreader and Instrument Sans.</p>
+        </div>
+
+        <div class="colophon__refs">
+          <h3>Sources</h3>
+          <ul class="refs">
+            <li>Y. Kuramoto, Self-entrainment of a population of coupled non-linear oscillators, <i>Lecture Notes in Physics</i> 39, 1975.</li>
+            <li>S. H. Strogatz, From Kuramoto to Crawford, <i>Physica D</i> 143, 2000.</li>
+            <li>J. A. Acebrón and others, The Kuramoto model, <i>Reviews of Modern Physics</i> 77, 2005.</li>
+            <li>R. Adler, A study of locking phenomena in oscillators, <i>Proceedings of the IRE</i> 34, 1946.</li>
+            <li>R. E. Mirollo and S. H. Strogatz, Synchronization of pulse-coupled biological oscillators, <i>SIAM Journal on Applied Mathematics</i> 50, 1990.</li>
+            <li>C. S. Peskin, <i>Mathematical Aspects of Heart Physiology</i>, Courant Institute, 1975.</li>
+            <li>H. Sakaguchi, Cooperative phenomena in coupled oscillator systems under external fields, <i>Progress of Theoretical Physics</i> 79, 1988.</li>
+            <li>S. H. Strogatz and R. E. Mirollo, Stability of incoherence in a population of coupled oscillators, <i>Journal of Statistical Physics</i> 63, 1991.</li>
+            <li>J. Buck, Synchronous rhythmic flashing of fireflies II, <i>Quarterly Review of Biology</i> 63, 1988.</li>
+            <li>G. B. Ermentrout, An adaptive model for synchrony in the firefly <i>Pteroptyx malaccae</i>, <i>Journal of Mathematical Biology</i> 29, 1991.</li>
+            <li>R. Sarfati and others, Emergent periodicity in the collective synchronous flashing of fireflies, <i>eLife</i> 12, 2023.</li>
+            <li>P. Laurent, The supposed synchronal flashing of fireflies, <i>Science</i> 45, 1917.</li>
+            <li>A. Pikovsky, M. Rosenblum and J. Kurths, <i>Synchronization</i>, Cambridge University Press, 2001 (for Huygens’s letters).</li>
+            <li>I. Belykh and others, Emergence of the London Millennium Bridge instability without synchronisation, <i>Nature Communications</i> 12, 2021.</li>
+            <li>Z. Néda and others, The sound of many hands clapping, <i>Nature</i> 403, 2000.</li>
+          </ul>
+        </div>
+      </div>
+    </footer>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wonderfield</title>
+    <meta name="description" content="Wonderfield is a magazine of mathematics you can play with. Each issue opens with one experiment, then shows the mathematics behind it." />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+  </head>
+  <body class="home">
+    <!-- ============================================================ FRONT -->
+    <header class="front" id="top">
+      <canvas class="front__sky" id="front-sky" role="img" aria-label="A single curve across a night sky: flat along the bottom, then rising after a dashed line marked K c. Fireflies along the flat part flash at random; those on the rising part flash together."></canvas>
+      <div class="front__mast">
+        <div class="front__row">
+          <h1 class="wordmark wordmark--big" data-wordmark></h1>
+          <button class="menu-btn" type="button" data-open-menu>Contents</button>
+        </div>
+        <p class="front__strap"><span>A magazine of mathematics you can play with</span><span>Issue 1 · Winter 2026</span></p>
+      </div>
+      <div></div>
+      <div class="front__foot">
+        <div>
+          <p class="front__kicker">In this issue</p>
+          <h2 class="front__title">Synchrony</h2>
+          <p class="front__q">How does a forest keep time?</p>
+          <a class="front__read" href="synchrony/index.html">Read Issue 1</a>
+        </div>
+        <div class="front__clue">
+          <p class="front__formula">K<sub>c</sub> = 2 / π g(0)</p>
+          <p>The curve is Kuramoto’s prediction for how many fireflies flash in step as their coupling <i>K</i> grows. Below <i>K</i><sub>c</sub>, a crowd. Above it, one beat.</p>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <!-- ========================================================== SHELF -->
+      <section class="shelf2" id="issues" aria-labelledby="issues-title">
+        <div class="shelf2__head">
+          <h2 id="issues-title">Issues</h2>
+          <p>One colour, one phenomenon, one experiment each</p>
+        </div>
+        <ol class="shelf2__list" id="issues-grid"></ol>
+        <div class="notes-band">
+          <h2>Field notes</h2>
+          <div>
+            <p>The working notebook behind every issue: full derivations, experiment logs, parameter comparisons, and each algorithm drawn step by step. Not a separate issue, but the back half of all of them.</p>
+            <small>Coming with Issue 1’s notebook. Until then, the derivations are inside the issue under “The mathematics”.</small>
+          </div>
+        </div>
+      </section>
+
+      <!-- =========================================================== NOTE -->
+      <section class="note" aria-labelledby="note-title">
+        <div class="note__letter">
+          <h2 id="note-title">On the name</h2>
+          <p>A field is where fireflies come out at night, and where naturalists go to watch them. In algebra it is a set of numbers closed under addition and multiplication, in which every number except zero can be divided by: the rationals, the reals, the complex numbers. In physics it is a quantity spread through space. And in this first issue, every firefly answers to the mean field of all the others.</p>
+          <!-- Kristie: a placeholder. Rewrite in your own words. -->
+          <p class="note__sign">Kristie, editor</p>
+        </div>
+        <ul class="principles">
+          <li><b>Play first</b><span>Every issue opens with something to do. The explanation comes after you have seen it happen.</span></li>
+          <li><b>Two ways to read</b><span>Just the story, or the story with its mathematics, opened one note at a time.</span></li>
+          <li><b>Measured, not guessed</b><span>Every model is written down, every dial is a symbol in it, and every number quoted was measured and tested.</span></li>
+        </ul>
+      </section>
+    </main>
+
+    <footer class="home-foot">
+      <p>Written and built by Kristie</p>
+      <!-- TODO: replace with your repository URL -->
+      <p><a href="https://github.com/Yunmo0121/wonderfield">Source on GitHub</a></p>
+    </footer>
+
+    <script type="module" src="/src/home.js"></script>
+  </body>
+</html>
